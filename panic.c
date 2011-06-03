@@ -1,15 +1,15 @@
-#include "console.h"
-
-void panic(char *message)
-{
-  cls();
-  printf("kernel panic!\n\n");
-  printf("%s\n", message);
-  hang();
-}
+#include "common.h"
 
 void hang()
 {
   for (;;)
     asm("hlt");
+}
+
+void panic(const char *message)
+{
+  cls();
+  kprintf("kernel panic!\n\n");
+  kprintf("%s\n", message);
+  hang();
 }

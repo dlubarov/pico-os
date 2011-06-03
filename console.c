@@ -1,100 +1,73 @@
+#include "common.h"
+
 #define COLUMNS                 80
 #define LINES                   24
 #define ATTRIBUTE               7
-#define VIDEO                   0xB8000
+#define VIDEO_RAM               0xB8000
+#define VIDEO_CHR(r,c)          vram[(COLUMNS*(r) + (c))*2]
+#define VIDEO_ATT(r,c)          vram[(COLUMNS*(r) + (c))*2 + 1]
 
-static int xpos;
-static int ypos;
-static volatile unsigned char *video;
+static int xpos = 0;
+static int ypos = 0;
+static volatile unsigned char *vram = (unsigned char *) VIDEO_RAM;
 
-/* Clear the screen and initialize VIDEO, XPOS and YPOS. */
 void cls()
 {
   int i;
-  video = (unsigned char *) VIDEO;
   for (i = 0; i < COLUMNS * LINES * 2; ++i)
-    video[i] = 0;
+    vram[i] = 0;
   xpos = ypos = 0;
 }
 
-/* Convert the integer D to a string and save the string in BUF. If
-   BASE is equal to 'd', interpret that D is decimal, and if BASE is
-   equal to 'x', interpret that D is hexadecimal. */
-void itoa(char *buf, int base, int d)
+void push_up()
 {
-  char *p = buf;
-  char *p1, *p2;
-  unsigned long ud = d;
-  int divisor = 10;
-
-  /* If %d is specified and D is minus, put `-' in the head. */
-  if (base == 'd' && d < 0)
+  unsigned int r, c;
+  for (r = 1; r < LINES; ++r)
+    for (c = 0; c < COLUMNS; ++c)
+    {
+      VIDEO_CHR(r - 1, c) = VIDEO_CHR(r, c);
+      VIDEO_ATT(r - 1, c) = VIDEO_ATT(r, c);
+    }
+  for (c = 0; c < COLUMNS; ++c)
   {
-    *p++ = '-';
-    buf++;
-    ud = -d;
-  }
-  else if (base == 'x')
-    divisor = 16;
-
-  /* Divide UD by DIVISOR until UD == 0. */
-  do
-  {
-    int remainder = ud % divisor;
-    *p++ = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
-  }
-  while (ud /= divisor);
-
-  /* Terminate BUF. */
-  *p = 0;
-
-  /* Reverse BUF. */
-  p1 = buf;
-  p2 = p - 1;
-  while (p1 < p2)
-  {
-    char tmp = *p1;
-    *p1 = *p2;
-    *p2 = tmp;
-    p1++;
-    p2--;
+    VIDEO_CHR(LINES - 1, c) = 0;
+    VIDEO_ATT(LINES - 1, c) = 0;
   }
 }
 
-/* Put the character C on the screen. */
-void putchar(int c)
+void newline()
+{
+  if (ypos + 1 >= LINES)
+    push_up();
+  else
+    ++ypos;
+  xpos = 0;
+}
+
+void kputchar(int c)
 {
   if (c == '\n' || c == '\r')
   {
-  newline:
-    xpos = 0;
-    ypos++;
-    if (ypos >= LINES)
-      ypos = 0;
+    newline();
     return;
   }
-
-  *(video + (xpos + ypos * COLUMNS) * 2) = c & 0xFF;
-  *(video + (xpos + ypos * COLUMNS) * 2 + 1) = ATTRIBUTE;
-
+  VIDEO_CHR(ypos, xpos) = c & 0xFF;
+  VIDEO_ATT(ypos, xpos) = ATTRIBUTE;
   if (++xpos >= COLUMNS)
-    goto newline;
+    newline();
 }
 
-/* Format a string and print it on the screen, just like the libc
-   function printf. */
-void printf(const char *format, ...)
+void kprintf(const char *format, ...)
 {
   char **arg = (char **) &format;
   int c;
-  char buf[20];
-
+  char buf[20]; // FIXME: appropriate buf size?
   ++arg;
 
   while ((c = *format++) != 0)
   {
     if (c != '%')
-      putchar (c);
+      kputchar(c);
     else
     {
       char *p;
@@ -105,10 +78,9 @@ void printf(const char *format, ...)
         case 'd':
         case 'u':
         case 'x':
-          itoa (buf, c, *((int *) arg++));
+          itoa(buf, c, *((int *) arg++));
           p = buf;
           goto string;
-          break;
 
         case 's':
           p = *arg++;
@@ -117,11 +89,11 @@ void printf(const char *format, ...)
 
         string:
           while (*p)
-            putchar (*p++);
+            kputchar(*p++);
           break;
 
         default:
-          putchar (*((int *) arg++));
+          kputchar(*((int *) arg++));
           break;
       }
     }

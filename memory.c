@@ -1,6 +1,4 @@
-#include "memory.h"
 #include "common.h"
-#include "panic.h"
 
 #define MAX_BLOCKS 500
 
@@ -32,4 +30,18 @@ void raw_free(void *start, size_t len)
     return; // can't take more blocks
   MemBlock *b = &available_blocks[num_available_blocks++];
   b->start = start; b->len = len;
+}
+
+void kmemcpy(void *dst, const void *src, size_t len)
+{
+  int i;
+  for (i = 0; i < len; ++i)
+    ((char *) dst)[i] = ((char *) src)[i];
+}
+
+void kmemset(void *mem, int value, size_t num)
+{
+  int i;
+  for (i = 0; i < num; ++i)
+    ((char *) mem)[i] = value;
 }

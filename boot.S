@@ -50,7 +50,7 @@ multiboot_entry:
 
         /* Halt. */
         pushl   $halt_message
-        call    EXT_C(printf)
+        call    EXT_C(kprintf)
 
 loop:   hlt
         jmp     loop
