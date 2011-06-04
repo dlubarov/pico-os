@@ -1,6 +1,7 @@
 // stolen from http://wiki.osdev.org/C%2B%2B
 
-#include "./icxxabi.h"
+#include "icxxabi.h"
+#include "common.h"
  
 	#ifdef __cplusplus
 	extern "C" {
@@ -103,3 +104,23 @@ void __cxa_finalize(void *f)
 	#ifdef __cplusplus
 	};
 	#endif
+
+void *operator new(size_t size)
+{
+  return kmalloc(size);
+}
+
+void *operator new[](size_t size)
+{
+  return kmalloc(size);
+}
+
+void operator delete(void *p)
+{
+  kfree(p);
+}
+
+void operator delete[](void *p)
+{
+  kfree(p);
+}

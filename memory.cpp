@@ -32,6 +32,19 @@ void raw_free(void *start, size_t len)
   b->start = start; b->len = len;
 }
 
+void *kmalloc(size_t len)
+{
+  void *mem = raw_malloc(len + sizeof(size_t));
+  *((size_t *) mem) = len;
+  return mem + sizeof(size_t);
+}
+
+void kfree(void *start)
+{
+  size_t len = ((size_t *) start)[-1];
+  raw_free(start - sizeof(size_t), len + sizeof(size_t));
+}
+
 void kmemcpy(void *dst, const void *src, size_t len)
 {
   int i;

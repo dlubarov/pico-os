@@ -18,35 +18,19 @@ public:
 
   void foo()
   {
-    kprintf("foo %d\n", x);
+    kprintf("init %d\n", x);
   }
 
   ~Test()
   {
-    kprintf("destructor\n");
+    kprintf("dest %d\n", x);
   }
 };
 
-Test test1(42), test2(100);
+Test test1(42), *test2 = new Test(100);
 
-void kmain(unsigned long magic, unsigned long addr)
+void init_memory(multiboot_info_t *mbi)
 {
-  // Am I booted by a Multiboot-compliant boot loader?
-  if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
-  {
-    kprintf("Invalid magic number: 0x%x\n", (unsigned) magic);
-    return;
-  }
-
-  multiboot_info_t *mbi = (multiboot_info_t *) addr;
-  cls();
-
-  if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5))
-  {
-    kprintf("Both bits 4 and 5 are set.\n");
-    return;
-  }
-
   if (CHECK_FLAG(mbi->flags, 6))
   {
     memory_map_t *mmap;
@@ -57,7 +41,6 @@ void kmain(unsigned long magic, unsigned long addr)
     {
       void *addr = (void *) mmap->base_addr_low;
       size_t len = mmap->length_low;
-
       if (addr == 0)
       {
         // We don't want malloc to return 0! Skip that byte.
@@ -69,27 +52,40 @@ void kmain(unsigned long magic, unsigned long addr)
   }
   else
     panic("no memory map was provided");
+}
 
-  int i, j;
-  for (i = 0; i < 10; ++i)
+void kmain(multiboot_info_t *mbi)
+{
+  cls();
+  for (;;)
   {
-    int l = i % 5 + 1;
-    char *s = (char *) raw_malloc(l + 1);
-    for (j = 0; j < l; ++j)
-      s[j] = 'A' + j;
-    s[l] = 0;
-    raw_free(s, l + 1);
+    int i;
+    for (i = 0; i < 10000000; ++i) {}
+    int len = randu32() % 10;
+    char *s = (char *) kmalloc(len + 1);
+    for (i = 0; i < len; ++i)
+      s[i] = 'A' + randu32() % 26;
+    s[len] = 0;
     kprintf("%s\n", s);
+    kfree(s);
   }
-  test1.foo();
-  test2.foo();
 }
 
 extern "C" void loader(unsigned long magic, unsigned long addr)
 {
+  if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
+    panic("bootloader did not supply multiboot magic number");
+  multiboot_info_t *mbi = (multiboot_info_t *) addr;
+  if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5))
+    panic("Both bits 4 and 5 are set.");
+
+  init_memory(mbi);
+
   for (unsigned long *constructor(&start_ctors); constructor < &end_ctors; ++constructor)
-    ((void (*) (void)) (*constructor)) ();
-  kmain(magic, addr);
+    ((void (*) (void)) (*constructor))();
+
+  kmain(mbi);
+
   for (unsigned long *destructor(&start_dtors); destructor < &end_dtors; ++destructor)
-    ((void (*) (void)) (*destructor)) ();
+    ((void (*) (void)) (*destructor))();
 }

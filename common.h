@@ -8,10 +8,12 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 typedef unsigned long long uint64;
-typedef uint32 size_t;
+typedef __SIZE_TYPE__ size_t;
 
 void *raw_malloc(size_t len);
 void raw_free(void *start, size_t len);
+void *kmalloc(size_t len);
+void kfree(void *start);
 
 void kmemcpy(void *dst, const void *src, size_t len);
 void kmemset(void *mem, int value, size_t num);
