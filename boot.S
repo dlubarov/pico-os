@@ -46,11 +46,12 @@ multiboot_entry:
         pushl   %eax
 
         /* Now enter the C main function... */
-        call    EXT_C(cmain)
+        call    EXT_C(loader)
 
         /* Halt. */
-        pushl   $halt_message
-        call    EXT_C(kprintf)
+        // TODO: add back?
+        /*pushl   $halt_message
+        call    EXT_C(kprintf)*/
 
 loop:   hlt
         jmp     loop
