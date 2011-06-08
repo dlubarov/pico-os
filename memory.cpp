@@ -58,3 +58,20 @@ void kmemset(void *mem, int value, size_t num)
   for (i = 0; i < num; ++i)
     ((char *) mem)[i] = value;
 }
+
+int kstrcmp(const char *s1, const char *s2)
+{
+  while (*s1 == *s2)
+  {
+    if (*s1 == 0)
+      return 0;
+    ++s1; ++s2;
+  }
+  return *(const unsigned char *) s1
+       - *(const unsigned char *) s2;
+}
+
+bool kstreq(const char *s1, const char *s2)
+{
+  return kstrcmp(s1, s2) == 0;
+}

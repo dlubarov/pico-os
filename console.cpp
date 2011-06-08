@@ -7,8 +7,8 @@
 #define VIDEO_CHR(r,c)          vram[(COLUMNS*(r) + (c))*2]
 #define VIDEO_ATT(r,c)          vram[(COLUMNS*(r) + (c))*2 + 1]
 
-static int xpos = 0;
-static int ypos = 0;
+static int xpos;
+static int ypos;
 static volatile unsigned char *vram = (unsigned char *) VIDEO_RAM;
 
 void cls()
@@ -47,14 +47,14 @@ void newline()
 void kputchar(int c)
 {
   if (c == '\n' || c == '\r')
+    newline();
+  else
   {
-    newline();
-    return;
+    VIDEO_CHR(ypos, xpos) = c & 0xFF;
+    VIDEO_ATT(ypos, xpos) = ATTRIBUTE;
+    if (++xpos >= COLUMNS)
+      newline();
   }
-  VIDEO_CHR(ypos, xpos) = c & 0xFF;
-  VIDEO_ATT(ypos, xpos) = ATTRIBUTE;
-  if (++xpos >= COLUMNS)
-    newline();
 }
 
 void kprintf(const char *format, ...)

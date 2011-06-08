@@ -1,22 +1,22 @@
 GCC = i386-elf-gcc -O0
 GPP = i386-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
 LD = i386-elf-ld
-QEMU = qemu-system-i386
-objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o
+QEMU = @qemu-system-i386
+objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o suite.o testcircularbuffer.o testhashmap.o
 
-test: kernel.bin
-	$(QEMU) -m 512 -kernel kernel.bin 2> /dev/null
+demo: kernel.bin
+	$(QEMU) -m 512 -kernel kernel.bin # 2> /dev/null
 
 kernel.bin: $(objects) linker.ld
-	$(LD) -T linker.ld -o kernel.bin $(objects)
+	$(LD) -T linker.ld -o kernel.bin $(objects) $(tests)
 
 boot.o: boot.S multiboot.h
 	$(GCC) -c boot.S 
 
-kernel.o: kernel.cpp common.h multiboot.h icxxabi.h
+kernel.o: kernel.cpp tests common.h multiboot.h icxxabi.h util/hashmap.h util/pair.h util/vector.h util/deque.h
 	$(GPP) kernel.cpp
 
-itoa.o: itoa.cpp
+itoa.o: itoa.cpp common.h
 	$(GPP) itoa.cpp
 
 console.o: console.cpp common.h
@@ -31,10 +31,13 @@ panic.o: panic.cpp common.h
 random.o: random.cpp common.h
 	$(GPP) random.cpp
 
-icxxabi.o: icxxabi.h
+icxxabi.o: icxxabi.cpp icxxabi.h
 	$(GPP) icxxabi.cpp
+
+suite.o: tests/suite.cpp tests/testcircularbuffer.cpp common.h
+	$(GPP) tests/*.cpp
 
 .PHONY: clean
 
 clean:
-	-rm -rf *.o *.bin *.gch
+	@rm -rf *.o *.bin *.gch

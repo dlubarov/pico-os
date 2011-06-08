@@ -1,33 +1,28 @@
 #include "icxxabi.h"
 #include "multiboot.h"
 #include "common.h"
+#include "util/hashmap.h"
 
 #define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
 
 extern "C" unsigned long start_ctors, end_ctors, start_dtors, end_dtors;
+void test_all();
 
-class Test
+void kmain(multiboot_info_t *mbi)
 {
-  int x;
+  cls();
+  test_all();
 
-public:
-  Test(int _x)
-  {
-    x = _x;
-  }
+  StringHashMap<int> M;
 
-  void foo()
-  {
-    kprintf("init %d\n", x);
-  }
+  /*M["three"] = 3;
+  M["one"] = 1;
+  M["five"] = 5;
+  M["two"] = 2;
+  M["four"] = 4;
 
-  ~Test()
-  {
-    kprintf("dest %d\n", x);
-  }
-};
-
-Test test1(42), *test2 = new Test(100);
+  kprintf("%d\n", M["two"]);*/
+}
 
 void init_memory(multiboot_info_t *mbi)
 {
@@ -44,31 +39,14 @@ void init_memory(multiboot_info_t *mbi)
       if (addr == 0)
       {
         // We don't want malloc to return 0! Skip that byte.
-        addr = (char *) addr + 1;
-        --len;
+        addr = (char *) addr + 4;
+        len -= 4;
       }
       raw_free(addr, len);
     }
   }
   else
     panic("no memory map was provided");
-}
-
-void kmain(multiboot_info_t *mbi)
-{
-  cls();
-  for (;;)
-  {
-    int i;
-    for (i = 0; i < 10000000; ++i) {}
-    int len = randu32() % 10;
-    char *s = (char *) kmalloc(len + 1);
-    for (i = 0; i < len; ++i)
-      s[i] = 'A' + randu32() % 26;
-    s[len] = 0;
-    kprintf("%s\n", s);
-    kfree(s);
-  }
 }
 
 extern "C" void loader(unsigned long magic, unsigned long addr)

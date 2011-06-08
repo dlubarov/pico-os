@@ -13,3 +13,19 @@ void panic(const char *message)
   kprintf("%s\n", message);
   hang();
 }
+
+void panic1(const char *format, int a)
+{
+  cls();
+  kprintf("kernel panic!\n\n");
+  kprintf(format, a);
+  hang();
+}
+
+void panic2(const char *format, int a, int b)
+{
+  cls();
+  kprintf("kernel panic!\n\n");
+  kprintf(format, a, b);
+  hang();
+}

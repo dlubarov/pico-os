@@ -3,9 +3,9 @@
 #include "icxxabi.h"
 #include "common.h"
  
-	#ifdef __cplusplus
-	extern "C" {
-	#endif
+#ifdef __cplusplus
+extern "C" {
+#endif
  
 atexit_func_entry_t __atexit_funcs[ATEXIT_MAX_FUNCS];
 uarch_t __atexit_func_count = 0;
@@ -100,10 +100,14 @@ void __cxa_finalize(void *f)
 		};
 	};
 };
+
+void __cxa_pure_virtual() {
+  panic("bad virtual call");
+}
  
-	#ifdef __cplusplus
-	};
-	#endif
+#ifdef __cplusplus
+};
+#endif
 
 void *operator new(size_t size)
 {
