@@ -12,16 +12,6 @@ void kmain(multiboot_info_t *mbi)
 {
   cls();
   test_all();
-
-  StringHashMap<int> M;
-
-  /*M["three"] = 3;
-  M["one"] = 1;
-  M["five"] = 5;
-  M["two"] = 2;
-  M["four"] = 4;
-
-  kprintf("%d\n", M["two"]);*/
 }
 
 void init_memory(multiboot_info_t *mbi)

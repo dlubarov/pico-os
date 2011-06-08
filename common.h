@@ -39,6 +39,7 @@ uint32 randu32_range(uint32 lower, uint32 upper);
 
 void cls();
 void kputchar(int c);
+void kputs(const char *s);
 void kprintf(const char *format, ...);
 
 void panic(const char *message);

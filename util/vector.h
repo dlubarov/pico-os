@@ -21,6 +21,16 @@ class Vector
       storage.push_back(x);
     }
 
+    T &front()
+    {
+      return storage.front();
+    }
+
+    T &back()
+    {
+      return storage.back();
+    }
+
     T pop_back()
     {
       return storage.pop_back();

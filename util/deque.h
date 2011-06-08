@@ -30,6 +30,16 @@ class Deque
       delete buf;
     }
 
+    T &front()
+    {
+      return buf->front();
+    }
+
+    T &back()
+    {
+      return buf->back();
+    }
+
     void push_front(const T x)
     {
       if (buf->full())

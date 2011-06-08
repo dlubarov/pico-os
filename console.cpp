@@ -57,6 +57,11 @@ void kputchar(int c)
   }
 }
 
+void kputs(const char *s)
+{
+  kprintf("%s\n", s);
+}
+
 void kprintf(const char *format, ...)
 {
   char **arg = (char **) &format;

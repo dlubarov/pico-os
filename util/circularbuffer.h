@@ -27,6 +27,19 @@ class CircularBuffer
       kfree(buf);
     }
 
+    T &front()
+    {
+      return *start;
+    }
+
+    T &back()
+    {
+      T *p = end - 1;
+      if (p < buf)
+        p += _capacity;
+      return *p;
+    }
+
     void push_front(const T x)
     {
       if (--start < buf)

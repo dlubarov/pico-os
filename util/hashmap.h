@@ -96,10 +96,20 @@ class HashMap
     V &operator[](K k)
     {
       if (contains(k))
-        ...
+      {
+        unsigned int i = hash(k) % num_buckets;
+        Vector<Pair<K, V> > *b = buckets + i;
+        for (i = 0; i < b->len(); ++i)
+          if (equal((*b)[i].first, k))
+            return (*b)[i].second;
+        ASSERT(0, "whoops in hashmap");
+      }
+      if (++_len > num_buckets)
+        expand();
       unsigned int i = hash(k) % num_buckets;
       Vector<Pair<K, V> > *b = buckets + i;
-      b->push_back(p);
+      b->push_back(Pair<K, V>(k, V()));
+      return b->back().second;
     }
 
     unsigned int len() const

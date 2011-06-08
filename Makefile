@@ -2,7 +2,8 @@ GCC = i386-elf-gcc -O0
 GPP = i386-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
 LD = i386-elf-ld
 QEMU = @qemu-system-i386
-objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o suite.o testcircularbuffer.o testhashmap.o
+objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o \
+          suite.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
 
 demo: kernel.bin
 	$(QEMU) -m 512 -kernel kernel.bin # 2> /dev/null
@@ -34,8 +35,20 @@ random.o: random.cpp common.h
 icxxabi.o: icxxabi.cpp icxxabi.h
 	$(GPP) icxxabi.cpp
 
-suite.o: tests/suite.cpp tests/testcircularbuffer.cpp common.h
-	$(GPP) tests/*.cpp
+suite.o: tests/suite.cpp tests/suite.h common.h
+	$(GPP) tests/suite.cpp
+
+testcircularbuffer.o: tests/testcircularbuffer.cpp util/circularbuffer.h common.h
+	$(GPP) tests/testcircularbuffer.cpp
+
+testdeque.o: tests/testdeque.cpp util/deque.h util/circularbuffer.h common.h
+	$(GPP) tests/testdeque.cpp
+
+testvector.o: tests/testvector.cpp util/vector.h util/deque.h util/circularbuffer.h common.h
+	$(GPP) tests/testvector.cpp
+
+testhashmap.o: tests/testhashmap.cpp util/hashmap.h util/pair.h util/vector.h util/deque.h util/circularbuffer.h common.h
+	$(GPP) tests/testhashmap.cpp
 
 .PHONY: clean
 
