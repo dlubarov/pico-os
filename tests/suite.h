@@ -1,3 +1,4 @@
+void test_String();
 void test_CircularBuffer();
 void test_Vector();
 void test_Deque();

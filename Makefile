@@ -3,7 +3,7 @@ GPP = i386-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -f
 LD = i386-elf-ld
 QEMU = @qemu-system-i386
 objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o \
-          suite.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
+          suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
 
 demo: kernel.bin
 	$(QEMU) -m 512 -kernel kernel.bin # 2> /dev/null
@@ -35,22 +35,28 @@ random.o: random.cpp common.h
 icxxabi.o: icxxabi.cpp icxxabi.h
 	$(GPP) icxxabi.cpp
 
-suite.o: tests/suite.cpp tests/suite.h common.h
+suite.o: tests/testframework.h tests/suite.cpp tests/suite.h common.h
 	$(GPP) tests/suite.cpp
 
-testcircularbuffer.o: tests/testcircularbuffer.cpp util/circularbuffer.h common.h
+testframework.o: tests/testframework.h tests/testframework.cpp common.h
+	$(GPP) tests/testframework.cpp
+
+teststring.o: tests/testframework.h tests/teststring.cpp util/string.h common.h
+	$(GPP) tests/teststring.cpp
+
+testcircularbuffer.o: tests/testframework.h tests/testcircularbuffer.cpp util/circularbuffer.h common.h
 	$(GPP) tests/testcircularbuffer.cpp
 
-testdeque.o: tests/testdeque.cpp util/deque.h util/circularbuffer.h common.h
+testdeque.o: tests/testframework.h tests/testdeque.cpp util/deque.h util/circularbuffer.h common.h
 	$(GPP) tests/testdeque.cpp
 
-testvector.o: tests/testvector.cpp util/vector.h util/deque.h util/circularbuffer.h common.h
+testvector.o: tests/testframework.h tests/testvector.cpp util/vector.h util/deque.h util/circularbuffer.h common.h
 	$(GPP) tests/testvector.cpp
 
-testhashmap.o: tests/testhashmap.cpp util/hashmap.h util/pair.h util/vector.h util/deque.h util/circularbuffer.h common.h
+testhashmap.o: tests/testframework.h tests/testhashmap.cpp util/hashmap.h util/pair.h util/vector.h util/deque.h util/circularbuffer.h common.h
 	$(GPP) tests/testhashmap.cpp
 
 .PHONY: clean
 
 clean:
-	@rm -rf *.o *.bin *.gch
+	./cleanup

@@ -1,19 +1,17 @@
+#include "testframework.h"
 #include "suite.h"
 #include "../common.h"
 
 void test_all()
 {
+  kputs("running all tests...");
+
+  test_String();
   test_CircularBuffer();
-  kputs("CircularBuffer passed");
-
   test_Deque();
-  kputs("Deque passed");
-
   test_Vector();
-  kputs("Vector passed");
-
   test_HashMap();
-  kputs("HashMap passed");
 
-  kprintf("all tests passed :-)\n");
+  if (STOP_ON_FAILURE)
+    kputs("all tests passed :-)");
 }

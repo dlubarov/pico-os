@@ -4,7 +4,7 @@
 #if ENABLE_ASSERTIONS
 #define ASSERT(c, s) do {if (!(c)) panic(s);} while (0)
 #else
-#define ASSERT(c, s) do {} while (0)
+#define ASSERT(c, s)
 #endif
 
 typedef signed char int8;
@@ -25,13 +25,7 @@ void kfree(void *start);
 void kmemcpy(void *dst, const void *src, size_t len);
 void kmemset(void *mem, int value, size_t num);
 int kstrcmp(const char *s1, const char *s2);
-/*struct eqstr
-{
-  bool operator()(const char *s1, const char *s2) const
-  {
-    return kstrcmp(s1, s2) == 0;
-  }
-}*/
+size_t kstrlen(const char *s);
 
 uint32 randu32();
 uint32 randu32_limit(uint32 upper);

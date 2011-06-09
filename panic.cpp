@@ -9,7 +9,7 @@ void hang()
 void panic(const char *message)
 {
   cls();
-  kprintf("kernel panic!\n\n");
+  kputs("kernel panic!\n\n");
   kprintf("%s\n", message);
   hang();
 }
@@ -17,7 +17,7 @@ void panic(const char *message)
 void panic1(const char *format, int a)
 {
   cls();
-  kprintf("kernel panic!\n\n");
+  kputs("kernel panic!\n\n");
   kprintf(format, a);
   hang();
 }
@@ -25,7 +25,7 @@ void panic1(const char *format, int a)
 void panic2(const char *format, int a, int b)
 {
   cls();
-  kprintf("kernel panic!\n\n");
+  kputs("kernel panic!\n\n");
   kprintf(format, a, b);
   hang();
 }

@@ -71,7 +71,10 @@ int kstrcmp(const char *s1, const char *s2)
        - *(const unsigned char *) s2;
 }
 
-bool kstreq(const char *s1, const char *s2)
+size_t kstrlen(const char *s)
 {
-  return kstrcmp(s1, s2) == 0;
+  size_t len = 0;
+  while (*s++ != 0)
+    ++len;
+  return len;
 }

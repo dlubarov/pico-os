@@ -1,0 +1,4 @@
+for EXT in o gch bin
+do
+  find . -name "*.$EXT" -delete
+done

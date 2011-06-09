@@ -1,7 +1,10 @@
+#include "testframework.h"
 #include "../util/hashmap.h"
 
 void test_HashMap()
 {
+  test_category("HashMap");
+
   StringHashMap<int> M;
 
   M["eight"] = 8;
@@ -15,14 +18,22 @@ void test_HashMap()
   M["three"] = 3;
   M["seven"] = 7;
 
-  ASSERT(M["one"] == 1, "map");
-  ASSERT(M["two"] == 2, "map");
-  ASSERT(M["three"] == 3, "map");
-  ASSERT(M["four"] == 4, "map");
-  ASSERT(M["five"] == 5, "map");
-  ASSERT(M["six"] == 6, "map");
-  ASSERT(M["seven"] == 7, "map");
-  ASSERT(M["eight"] == 8, "map");
-  ASSERT(M["nine"] == 9, "map");
-  ASSERT(M["ten"] == 10, "map");
+  assert(M.contains("three"));
+  assert(M.contains("five"));
+  assert(M.contains("ten"));
+
+  assert_false(M.contains(""));
+  assert_false(M.contains("twenty"));
+  assert_false(M.contains("!@#%^"));
+
+  assert(M["one"] == 1, "map");
+  assert(M["two"] == 2, "map");
+  assert(M["three"] == 3, "map");
+  assert(M["four"] == 4, "map");
+  assert(M["five"] == 5, "map");
+  assert(M["six"] == 6, "map");
+  assert(M["seven"] == 7, "map");
+  assert(M["eight"] == 8, "map");
+  assert(M["nine"] == 9, "map");
+  assert(M["ten"] == 10, "map");
 }
