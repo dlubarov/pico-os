@@ -26,14 +26,20 @@ void test_HashMap()
   assert_false(M.contains("twenty"));
   assert_false(M.contains("!@#%^"));
 
-  assert(M["one"] == 1, "map");
-  assert(M["two"] == 2, "map");
-  assert(M["three"] == 3, "map");
-  assert(M["four"] == 4, "map");
-  assert(M["five"] == 5, "map");
-  assert(M["six"] == 6, "map");
-  assert(M["seven"] == 7, "map");
-  assert(M["eight"] == 8, "map");
-  assert(M["nine"] == 9, "map");
-  assert(M["ten"] == 10, "map");
+  assert(M["one"]   == 1,  "lookup");
+  assert(M["two"]   == 2,  "lookup");
+  assert(M["three"] == 3,  "lookup");
+  assert(M["four"]  == 4,  "lookup");
+  assert(M["five"]  == 5,  "lookup");
+  assert(M["six"]   == 6,  "lookup");
+  assert(M["seven"] == 7,  "lookup");
+  assert(M["eight"] == 8,  "lookup");
+  assert(M["nine"]  == 9,  "lookup");
+  assert(M["ten"]   == 10, "lookup");
+
+  M["foo"] = 50; M["foo"] = 80;
+  M["foo"] = M["foo"] = 42;
+  M["foo"] = M["foo"] = M["foo"] = M["foo"];
+
+  assert(M["foo"] == 42, "foo");
 }

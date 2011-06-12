@@ -7,6 +7,7 @@ void test_String()
 
   String a("a"),
          b("b"),
+         c("c"),
          aa("aa"),
          bb("bb"),
          foo("foo"),
@@ -21,6 +22,7 @@ void test_String()
 
   assert_false(foo == bar);
   assert_false(baz == empty);
+  assert_false(foo + 'a' == foo + 'b');
 
   assert(foo != bar, "!=");
   assert(bar != baz, "!=");
@@ -30,10 +32,11 @@ void test_String()
   assert_false(foo != foo);
   assert_false(empty != empty);
 
-  assert(a + a == aa, "+");
-  assert(b + b == bb, "+");
-  assert(a + a == a + a, "+");
-  assert(b + b == b + b, "+");
-  assert(a + b == a + b, "+");
+  assert(a + "a" == aa, "+");
+  assert(b + b == "bb", "+");
+  assert(c + "c" == "cc", "+");
+  assert(a + "a" == a + 'a', "+");
+  assert(b + "b" == b + "b", "+");
+  assert(a + b == a + 'b', "+ char");
   assert(a + b != b + a, "+");
 }

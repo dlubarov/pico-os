@@ -47,6 +47,9 @@ extern "C" void loader(unsigned long magic, unsigned long addr)
   if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5))
     panic("Both bits 4 and 5 are set.");
 
+  if (CHECK_FLAG(mbi->flags, 2))
+    kprintf("command = %s\n", (char *) mbi->cmdline);
+
   init_memory(mbi);
 
   for (unsigned long *constructor(&start_ctors); constructor < &end_ctors; ++constructor)

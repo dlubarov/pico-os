@@ -70,4 +70,20 @@ class String
       kfree(mem);
       return result;
     }
+
+    String operator+(const char *s) const
+    {
+      return *this + String(s);
+    }
+
+    String operator+(char c) const
+    {
+      char *mem = (char *) kmalloc(_len + 2);
+      kmemcpy(mem, buf, _len);
+      mem[_len] = c;
+      mem[_len + 1] = 0;
+      String result(mem);
+      kfree(mem);
+      return result;
+    }
 };
