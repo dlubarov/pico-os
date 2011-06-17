@@ -1,4 +1,5 @@
 #include "../common.h"
+#include "hash.h"
 
 class String
 {
@@ -85,5 +86,10 @@ class String
       String result(mem);
       kfree(mem);
       return result;
+    }
+
+    unsigned int hash()
+    {
+      return hash_string(c_str());
     }
 };

@@ -1,12 +1,11 @@
 #include "testframework.h"
 #include "../util/hashmap.h"
 
-void test_HashMap()
+void test_StringHashMap()
 {
-  test_category("HashMap");
+  test_category("StringHashMap");
 
   StringHashMap<int> M;
-
   M["eight"] = 8;
   M["five"] = 5;
   M["one"] = 1;
@@ -42,4 +41,31 @@ void test_HashMap()
   M["foo"] = M["foo"] = M["foo"] = M["foo"];
 
   assert(M["foo"] == 42, "foo");
+}
+
+void test_UIntHashMap()
+{
+  test_category("UIntHashMap");
+
+  UIntHashMap<int> M;
+  int nums[] = {0, 1, 2, 3, 4, 5, 7, 21, 29, 100, -1, -100, -29, 1000, -1000, 9999};
+  unsigned int len = sizeof(nums) / sizeof(nums[0]);
+  for (unsigned int i = 0; i < len; ++i)
+  {
+    int n = nums[i];
+    M[n] = 1234567;
+    M[n] = 3 * n - 1;
+    M[n] = M[n] = M[n];
+  }
+  for (unsigned int i = 0; i < len; ++i)
+  {
+    int n = nums[i];
+    assert(M[n] == 3 * n - 1, "3n-1");
+  }
+}
+
+void test_HashMap()
+{
+  test_StringHashMap();
+  test_UIntHashMap();
 }

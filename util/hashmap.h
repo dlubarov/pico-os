@@ -3,6 +3,7 @@
 #include "../common.h"
 #include "vector.h"
 #include "pair.h"
+#include "hash.h"
 
 #define INITIAL_BUCKETS 1
 
@@ -122,18 +123,28 @@ template <class V>
 class StringHashMap : public HashMap<const char *, V>
 {
   protected:
-    virtual bool equal(const char * const k1, const char * const k2) const
+    virtual bool equal(const char *k1, const char *k2) const
     {
       return kstrcmp(k1, k2) == 0;
     }
 
-    // SOURCE: http://www.cse.yorku.ca/~oz/hash.html
     virtual unsigned int hash(const char *k) const
     {
-      unsigned int h = 5381;
-      int c;
-      while (c = *k++)
-        h = ((h << 5) + h) + c;
-      return h;
+      return hash_string(k);
+    }
+};
+
+template <class V>
+class UIntHashMap : public HashMap<unsigned int, V>
+{
+  protected:
+    virtual bool equal(unsigned int a, unsigned int b) const
+    {
+      return a == b;
+    }
+
+    virtual unsigned int hash(unsigned int x) const
+    {
+      return x;
     }
 };

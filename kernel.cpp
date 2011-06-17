@@ -12,6 +12,10 @@ void kmain(multiboot_info_t *mbi)
 {
   cls();
   test_all();
+  newline();
+
+  kputs("compiling standard library...");
+  ;
 }
 
 void init_memory(multiboot_info_t *mbi)

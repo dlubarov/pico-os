@@ -32,6 +32,7 @@ uint32 randu32_limit(uint32 upper);
 uint32 randu32_range(uint32 lower, uint32 upper);
 
 void cls();
+void newline();
 void kputchar(int c);
 void kputs(const char *s);
 void kprintf(const char *format, ...);
