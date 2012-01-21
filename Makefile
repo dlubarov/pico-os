@@ -1,6 +1,6 @@
-GCC = i386-elf-gcc -O0
-GPP = i386-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
-LD = i386-elf-ld
+GCC = gcc -O0
+GPP = g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
+LD = ld
 QEMU = @qemu-system-i386
 objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
           suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
@@ -32,7 +32,7 @@ panic.o: panic.cpp common.h
 random.o: random.cpp common.h
 	$(GPP) random.cpp
 
-hash.o: util/hash.cpp
+hash.o: util/hash.cpp util/hash.h
 	$(GPP) util/hash.cpp
 
 icxxabi.o: icxxabi.cpp icxxabi.h
