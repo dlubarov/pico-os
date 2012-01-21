@@ -3,7 +3,7 @@
 #include "common.h"
 #include "util/hashmap.h"
 
-#define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
+#define CHECK_FLAG(flags,bit) ((flags) & (1 << (bit)))
 
 extern "C" unsigned long start_ctors, end_ctors, start_dtors, end_dtors;
 void test_all();
