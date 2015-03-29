@@ -2,6 +2,15 @@
 
 #define MAX_BLOCKS 500
 
+// TODO: This is a very primitive malloc. My idea for a better, but still
+// simple implementation:
+//
+// Pick standard block sizes (powers of 2 + extra for header?), and store an
+// array which maps block size to the first unused block of that size. Unused
+// blocks store a pointer to the next unused block of the same size, so we will
+// essentially have a linked list for each block size, and only a small number
+// of head pointers need to be stored with static duration.
+
 typedef struct {
   void *start;
   size_t len;
@@ -12,8 +21,7 @@ int num_available_blocks = 0;
 
 void *raw_malloc(size_t len)
 {
-  unsigned int i;
-  for (i = 0; i < num_available_blocks; ++i)
+  for (unsigned int i = 0; i < num_available_blocks; ++i)
     if (available_blocks[i].len >= len)
     {
       void *mem = available_blocks[i].start;

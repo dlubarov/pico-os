@@ -1,6 +1,6 @@
-GCC = gcc -O0
-GPP = g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
-LD = ld
+GCC = i686-elf-gcc -O0
+GPP = i686-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
+LD = i686-elf-ld
 QEMU = @qemu-system-i386
 objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
           suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
