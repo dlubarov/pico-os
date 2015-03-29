@@ -5,8 +5,14 @@ QEMU = @qemu-system-i386
 objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
           suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
 
-demo: kernel.bin
-	$(QEMU) -m 512 -kernel kernel.bin # 2> /dev/null
+demo: kernel.iso
+	$(QEMU) -m 128 -cdrom kernel.iso # 2> /dev/null
+
+kernel.iso: kernel.bin
+	mkdir -p isodir/boot/grub
+	cp kernel.bin isodir/boot/kernel.bin
+	cp grub.cfg isodir/boot/grub/grub.cfg
+	grub-mkrescue -o kernel.iso isodir
 
 kernel.bin: $(objects) linker.ld
 	$(LD) -T linker.ld -o kernel.bin $(objects) $(tests)

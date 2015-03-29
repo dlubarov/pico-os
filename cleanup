@@ -1,4 +1,5 @@
-for EXT in o gch bin
+for ext in o gch bin iso
 do
-  find . -name "*.$EXT" -delete
+  find . -name "*.$ext" -delete
 done
+rm -rf isodir
