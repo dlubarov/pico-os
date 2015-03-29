@@ -75,7 +75,7 @@ void kprintf(const char *format, ...)
       kputchar(c);
     else
     {
-      char *p;
+      const char *p;
 
       c = *format++;
       switch (c)
