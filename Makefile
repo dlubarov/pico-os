@@ -17,8 +17,8 @@ kernel.iso: kernel.bin
 kernel.bin: $(objects) linker.ld
 	$(LD) -T linker.ld -o kernel.bin $(objects) $(tests)
 
-boot.o: boot.S multiboot.h
-	$(GCC) -c boot.S 
+boot.o: boot.s multiboot.h
+	$(GCC) -c boot.s
 
 kernel.o: kernel.cpp tests common.h multiboot.h icxxabi.h util/hashmap.h util/pair.h util/vector.h util/deque.h
 	$(GPP) kernel.cpp

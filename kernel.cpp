@@ -14,6 +14,9 @@ void kmain(multiboot_info_t *mbi)
   test_all();
   newline();
 
+  kprintf("vbe_mode = %d\n", mbi->vbe_mode);
+  kprintf("vbe_mode_info = %d\n", mbi->vbe_mode_info);
+
   kputs("compiling standard library...");
   ;
 }
@@ -46,7 +49,7 @@ void init_memory(multiboot_info_t *mbi)
 extern "C" void loader(unsigned long magic, unsigned long addr)
 {
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
-    panic("bootloader did not supply multiboot magic number");
+    panic1("bootloader did not supply multiboot magic number; found %d", magic);
   multiboot_info_t *mbi = (multiboot_info_t *) addr;
   if (CHECK_FLAG(mbi->flags, 4) && CHECK_FLAG(mbi->flags, 5))
     panic("Both bits 4 and 5 are set.");

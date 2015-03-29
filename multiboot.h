@@ -1,28 +1,5 @@
-/* The magic number for the Multiboot header.  */
-#define MULTIBOOT_HEADER_MAGIC		0x1BADB002
-
-/* The flags for the Multiboot header.  */
-#ifdef __ELF__
-# define MULTIBOOT_HEADER_FLAGS		0x00000003
-#else
-# define MULTIBOOT_HEADER_FLAGS		0x00010003
-#endif
-
 /* The magic number passed by a Multiboot-compliant boot loader.  */
 #define MULTIBOOT_BOOTLOADER_MAGIC	0x2BADB002
-
-/* The size of our stack (16KB).  */
-#define STACK_SIZE			0x4000
-
-/* C symbol format. HAVE_ASM_USCORE is defined by configure.  */
-#ifdef HAVE_ASM_USCORE
-# define EXT_C(sym)			_ ## sym
-#else
-# define EXT_C(sym)			sym
-#endif
-
-#ifndef ASM
-/* Do not include here in boot.S.  */
 
 /* Types.  */
 
@@ -32,11 +9,18 @@ typedef struct multiboot_header
   unsigned long magic;
   unsigned long flags;
   unsigned long checksum;
+
   unsigned long header_addr;
   unsigned long load_addr;
   unsigned long load_end_addr;
   unsigned long bss_end_addr;
   unsigned long entry_addr;
+
+  /* These are only valid if MULTIBOOT_VIDEO_MODE is set. */
+  unsigned long mode_type;
+  unsigned long width;
+  unsigned long height;
+  unsigned long depth;
 } multiboot_header_t;
 
 /* The symbol table for a.out.  */
@@ -74,6 +58,27 @@ typedef struct multiboot_info
   } u;
   unsigned long mmap_length;
   unsigned long mmap_addr;
+
+  /* Drive Info buffer */
+  unsigned int drives_length;
+  unsigned int drives_addr;
+
+  /* ROM configuration table */
+  unsigned int config_table;
+
+  /* Boot Loader Name */
+  unsigned int boot_loader_name;
+
+  /* APM table */
+  unsigned int apm_table;
+
+  /* Video */
+  unsigned int vbe_control_info;
+  unsigned int vbe_mode_info;
+  unsigned short vbe_mode;
+  unsigned short vbe_interface_seg;
+  unsigned short vbe_interface_off;
+  unsigned short vbe_interface_len;
 } multiboot_info_t;
 
 /* The module structure.  */
@@ -96,5 +101,3 @@ typedef struct memory_map
   unsigned long length_high;
   unsigned long type;
 } memory_map_t;
-
-#endif /* ! ASM */
