@@ -10,12 +10,30 @@ void test_all();
 
 void kmain(multiboot_info_t *mbi)
 {
+  if (mbi->mods_count != 1)
+    panic("unexpected module count");
+  module_t *modules = (module_t *) mbi->mods_addr;
+  uint8 *initrd = (uint8 *) modules[0].mod_start;
+  uint8 *initrd_end = (uint8 *) modules[0].mod_end;
+
+  vbe_mode_info_t *vbe_mode_info = (vbe_mode_info_t *) mbi->vbe_mode_info;
+  init_graphics(vbe_mode_info);
+
+  int w = vbe_mode_info->Xres, h = vbe_mode_info->Yres;
+  for (uint16 x = 0; x < w; ++x)
+  {
+    for (uint16 y = 0; y < h; ++y)
+    {
+      int r = x * 255 / w;
+      int g = y * 255 / h;
+      int b = 100;
+      setpixel(x, y, r, g, b);
+    }
+  }
+
   cls();
   test_all();
   newline();
-
-  kprintf("vbe_mode = %d\n", mbi->vbe_mode);
-  kprintf("vbe_mode_info = %d\n", mbi->vbe_mode_info);
 
   kputs("compiling standard library...");
   ;

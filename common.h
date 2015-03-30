@@ -1,5 +1,7 @@
 #pragma once
 
+#include "multiboot.h"
+
 #define ENABLE_ASSERTIONS 1
 #if ENABLE_ASSERTIONS
 #define ASSERT(c, s) do {if (!(c)) panic(s);} while (0)
@@ -36,6 +38,9 @@ void newline();
 void kputchar(int c);
 void kputs(const char *s);
 void kprintf(const char *format, ...);
+
+void init_graphics(vbe_mode_info_t *vbe_mode_info);
+void setpixel(int x, int y, uint8 r, uint8 g, uint8 b);
 
 void panic(const char *message);
 void panic1(const char *message, int a);

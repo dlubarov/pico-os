@@ -2,17 +2,22 @@ GCC = i686-elf-gcc -O0
 GPP = i686-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
 LD = i686-elf-ld
 QEMU = @qemu-system-i386
-objects = boot.o kernel.o console.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
+objects = boot.o kernel.o console.o graphics.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
           suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
 
 demo: kernel.iso
 	$(QEMU) -m 128 -cdrom kernel.iso # 2> /dev/null
 
-kernel.iso: kernel.bin
+kernel.iso: kernel.bin initrd.bin
+	rm -rf isodir
 	mkdir -p isodir/boot/grub
-	cp kernel.bin isodir/boot/kernel.bin
-	cp grub.cfg isodir/boot/grub/grub.cfg
+	cp kernel.bin isodir/boot
+	cp initrd.bin isodir/boot
+	cp grub.cfg isodir/boot/grub
 	grub-mkrescue -o kernel.iso isodir
+
+initrd.bin:
+	./generate-initrd
 
 kernel.bin: $(objects) linker.ld
 	$(LD) -T linker.ld -o kernel.bin $(objects) $(tests)
@@ -28,6 +33,9 @@ itoa.o: itoa.cpp common.h
 
 console.o: console.cpp common.h
 	$(GPP) console.cpp
+
+graphics.o: graphics.cpp common.h
+	$(GPP) graphics.cpp
 
 memory.o: memory.cpp common.h
 	$(GPP) memory.cpp

@@ -1,7 +1,7 @@
+#pragma once
+
 /* The magic number passed by a Multiboot-compliant boot loader.  */
 #define MULTIBOOT_BOOTLOADER_MAGIC	0x2BADB002
-
-/* Types.  */
 
 /* The Multiboot header.  */
 typedef struct multiboot_header
@@ -101,3 +101,45 @@ typedef struct memory_map
   unsigned long length_high;
   unsigned long type;
 } memory_map_t;
+
+typedef struct vbe_control_info {
+  char VbeSignature[4];                   // == "VESA"
+  unsigned short VbeVersion;              // == 0x0300 for VBE 3.0
+  unsigned short OemStringPtr[2];         // isa vbeFarPtr
+  unsigned char Capabilities[4];
+  unsigned short VideoModePtr[2];         // isa vbeFarPtr
+  unsigned short TotalMemory;             // as # of 64KB blocks
+} __attribute__((packed)) vbe_control_info_t;
+
+typedef struct vbe_mode_info {
+  unsigned short attributes;
+  unsigned char winA,winB;
+  unsigned short granularity;
+  unsigned short winsize;
+  unsigned short segmentA, segmentB;
+  unsigned long winFuncPtr; // ptr to INT 0x10 Function 0x4F05
+  unsigned short pitch; // bytes per scanline
+
+  unsigned short Xres, Yres;
+  unsigned char Wchar, Ychar, planes, bpp, banks;
+  unsigned char memory_model, bank_size, image_pages;
+  unsigned char reserved0;
+
+  unsigned char red_mask_size, red_position;
+  unsigned char green_mask_size, green_position;
+  unsigned char blue_mask_size, blue_position;
+  unsigned char rsv_mask, rsv_position;
+  unsigned char directcolor_attributes;
+
+  unsigned long physbase;  // your LFB (Linear Framebuffer) address ;)
+  unsigned long reserved1;
+  unsigned short reserved2;
+} __attribute__((packed)) vbe_mode_info_t;
+
+typedef enum
+{
+  memPL = 3, /* Planar memory model */
+  memPK = 4, /* Packed pixel memory model */
+  memRGB = 6, /* Direct color RGB memory model */
+  memYUV = 7, /* Direct color YUV memory model */
+} memModels;
