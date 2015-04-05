@@ -1,2 +1,9 @@
 #!/usr/bin/env bash
-printf "\xA0\xFF\xA0" > initrd.bin
+
+set -e
+
+shopt -s dotglob
+cd initrd
+tar -v -c -f ../initrd.bin --format=v7 *
+cd ..
+shopt -u dotglob

@@ -1,7 +1,7 @@
 #include "icxxabi.h"
 #include "multiboot.h"
 #include "common.h"
-#include "util/hashmap.h"
+#include "tar.h"
 
 #define CHECK_FLAG(flags,bit) ((flags) & (1 << (bit)))
 
@@ -13,8 +13,12 @@ void kmain(multiboot_info_t *mbi)
   if (mbi->mods_count != 1)
     panic("unexpected module count");
   module_t *modules = (module_t *) mbi->mods_addr;
-  uint8 *initrd = (uint8 *) modules[0].mod_start;
-  uint8 *initrd_end = (uint8 *) modules[0].mod_end;
+  void *initrd_start = (void *) modules[0].mod_start;
+  void *initrd_end = (void *) modules[0].mod_end;
+  Blob initrd_blob(initrd_start, initrd_end);
+  StringHashMap<Blob> initrd;
+  parse_tar(initrd_blob, initrd);
+  Blob ttf = initrd["Inconsolata-Regular.ttf"];
 
   vbe_mode_info_t *vbe_mode_info = (vbe_mode_info_t *) mbi->vbe_mode_info;
   init_graphics(vbe_mode_info);
@@ -26,7 +30,8 @@ void kmain(multiboot_info_t *mbi)
     {
       int r = x * 255 / w;
       int g = y * 255 / h;
-      int b = 100;
+      int b = 180;
+
       setpixel(x, y, r, g, b);
     }
   }

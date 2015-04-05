@@ -2,7 +2,7 @@ GCC = i686-elf-gcc -O0
 GPP = i686-elf-g++ -O0 -c -nostdlib -nostartfiles -nodefaultlibs -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector
 LD = i686-elf-ld
 QEMU = @qemu-system-i386
-objects = boot.o kernel.o console.o graphics.o memory.o panic.o random.o itoa.o icxxabi.o hash.o \
+objects = boot.o kernel.o console.o graphics.o memory.o panic.o random.o itoa.o icxxabi.o hash.o tar.o \
           suite.o testframework.o teststring.o testcircularbuffer.o testdeque.o testvector.o testhashmap.o
 
 demo: kernel.iso
@@ -25,7 +25,7 @@ kernel.bin: $(objects) linker.ld
 boot.o: boot.s multiboot.h
 	$(GCC) -c boot.s
 
-kernel.o: kernel.cpp tests common.h multiboot.h icxxabi.h util/hashmap.h util/pair.h util/vector.h util/deque.h
+kernel.o: kernel.cpp tests common.h multiboot.h icxxabi.h tar.h util/hashmap.h util/pair.h util/vector.h util/deque.h
 	$(GPP) kernel.cpp
 
 itoa.o: itoa.cpp common.h
@@ -36,6 +36,9 @@ console.o: console.cpp common.h
 
 graphics.o: graphics.cpp common.h
 	$(GPP) graphics.cpp
+
+tar.o: tar.cpp util/blob.h util/hashmap.h
+	$(GPP) tar.cpp
 
 memory.o: memory.cpp common.h
 	$(GPP) memory.cpp
