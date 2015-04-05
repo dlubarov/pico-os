@@ -16,7 +16,7 @@ class Stack
       panic("copy constructor not supported");
     }
 
-    void push_back(T x)
+    void push_back(const T x)
     {
       storage.push_back(x);
     }
@@ -35,4 +35,4 @@ class Stack
     {
       return storage.len();
     }
-}
+};

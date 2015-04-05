@@ -18,7 +18,7 @@ class Deque
     }
 
   public:
-    Deque() : buf(new CircularBuffer<T>(1)) {}
+    Deque() : buf(new CircularBuffer<T>(8)) {}
 
     Deque(Deque &source)
     {

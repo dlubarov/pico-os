@@ -35,6 +35,7 @@ class HashMap
 
   protected:
     virtual unsigned int hash(K k) const = 0;
+
     virtual bool equal(K k1, K k2) const = 0;
 
   public:
@@ -111,6 +112,18 @@ class HashMap
       Vector<Pair<K, V> > *b = buckets + i;
       b->push_back(Pair<K, V>(k, V()));
       return b->back().second;
+    }
+
+    Vector<K> keys()
+    {
+      Vector<K> result;
+      for (unsigned int i = 0; i < num_buckets; ++i)
+      {
+        Vector<Pair<K, V> > *bucket = buckets + i;
+        for (unsigned int j = 0; j < bucket->len(); ++j)
+          result.push_back((*bucket)[j].first);
+      }
+      return result;
     }
 
     unsigned int len() const
